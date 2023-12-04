@@ -14,7 +14,7 @@ pub struct DQN {
     pub main_network: NeuralNet,
     target_network: NeuralNet,
     discount_factor: f32,
-    agent: Agent,
+    pub agent: Agent,
 }
 
 impl DQN {

@@ -27,6 +27,7 @@ impl Layer {
 
         // Initialize the weights using Xavier initialization
         let weight_scale = (6.0 / (input_size + output_size) as f32).sqrt();
+
         let weights = (0..input_size * output_size)
             .map(|_| rng.gen_range(-weight_scale..weight_scale))
             .collect();
@@ -73,6 +74,7 @@ impl Layer {
         
         // Set the pre-activation values (weighted_sums) and store the output for later reference
         self.weighted_sums = pre_activations;
+
         self.output = sigmoid_vec(&self.weighted_sums)?;
 
         return Ok(self.output.clone());

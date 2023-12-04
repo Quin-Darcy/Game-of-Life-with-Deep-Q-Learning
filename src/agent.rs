@@ -150,6 +150,7 @@ impl Agent {
         let mut rng = rand::thread_rng();
 
         let alive_percentage = if rng.gen::<f32>() < 0.3 {
+
             rng.gen_range(0.01..=MAX_ALIVE_RATIO)
         } else {
             self.get_best_state_alive_ratio()
@@ -220,6 +221,11 @@ impl Agent {
         }
 
         total_probability / self.state_space.len() as f32
+    }
+
+    pub fn add_state(&mut self, state: &BitVec, w: usize, h: usize) {
+        let reward = self.run_state(w, h, state);
+        self.state_space.insert(state.clone(), reward);
     }
 
     // Remove the states with the lowest probability from the state space until it is below the maximum size

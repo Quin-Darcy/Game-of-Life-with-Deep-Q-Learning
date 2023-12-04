@@ -14,11 +14,9 @@ mod utility;
 
 use crate::grid::Grid;
 use crate::dqn::DQN;
-use crate::agent::Agent;
 use crate::constants::{
     WINDOW_WIDTH_MAX, 
     WINDOW_HEIGHT_MAX, 
-    EPSILON, 
     MAX_POPULATION_REPEATS, 
     MAX_POPULATION_AGE, 
     GRID_DIM, 
@@ -49,7 +47,7 @@ struct Model {
 
 fn model(app: &App) -> Model {
     let num_actions = GRID_DIM.pow(2);
-    let layer_layout = vec![num_actions, num_actions + 100, num_actions - 100, num_actions];
+    let layer_layout = vec![num_actions, num_actions + num_actions / 2, num_actions - num_actions / 2, num_actions];
 
     let learning_rate = LEARNING_RATE;
     let discount_factor = DISCOUNT_FACTOR;
@@ -139,6 +137,16 @@ fn update(app: &App, model: &mut Model, _update: Update) {
 
         // Reset grid
         model.grid = Grid::new(w as f32, h as f32, &grid_state);
+
+        // Add the new state back into the agent's state space and thus back into the replay buffer
+        model.dqn.agent.add_state(&grid_state, w, h);
+
+        let total_episodes = 1;
+        let episodes_per_update = 1;
+        let batch_size = BATCH_SIZE;
+        let epochs = 1;
+    
+        model.dqn.run_training(total_episodes, episodes_per_update, epochs, batch_size).unwrap();
     } else {
         // Update the grid and increase the population age
         model.grid.population_age += 1;
@@ -149,8 +157,7 @@ fn update(app: &App, model: &mut Model, _update: Update) {
 fn create_grid_state(dqn: &mut DQN) -> BitVec {
     let num_actions = GRID_DIM.pow(2);
     // Start with random grid state
-    let mut temp_agent = Agent::new(EPSILON, num_actions);
-    let initial_grid_state = temp_agent.get_new_state();
+    let initial_grid_state = dqn.agent.get_new_state();
 
     // Convert the grid state into a Vec<f32>
     let mut grid_state_vec: Vec<f32> = initial_grid_state.iter()

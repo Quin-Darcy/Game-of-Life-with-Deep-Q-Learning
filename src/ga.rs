@@ -200,7 +200,12 @@ impl GA {
                     let point_x = rng.gen_range(0..grid_side_length);
                     let point_y = rng.gen_range(0..grid_side_length);
                     let max_section_size = grid_side_length - point_x.max(point_y);
-                    let crossover_size = rng.gen_range(1..=max_section_size.min(crossover_side_length));
+
+                    let crossover_size = if max_section_size.min(crossover_side_length) <= 1 {
+                        2
+                    } else {
+                        rng.gen_range(1..=max_section_size.min(crossover_side_length))
+                    };
     
                     for y in point_y..(point_y + crossover_size).min(grid_side_length) {
                         for x in point_x..(point_x + crossover_size).min(grid_side_length) {
@@ -243,6 +248,12 @@ impl GA {
 
                 // Mutate the state at the mutation points
                 for _ in 0..num_mutation_points {
+                    // *** UPDATE ** //
+                    if state_size == 0 {
+                        panic!("state_size is zero");
+                    }
+                    // ************//
+                    
                     let index = rng.gen_range(0..state_size);
                     let bit = new_states[i][index];
                     if let Some(bitvec) = new_states.get_mut(i) {
