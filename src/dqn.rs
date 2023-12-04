@@ -21,7 +21,7 @@ impl DQN {
     pub fn new(num_layers: usize, layer_layout: Vec<usize>, learning_rate: f32, discount_factor: f32) -> Self {
         let main_network: NeuralNet = NeuralNet::new(num_layers, layer_layout, learning_rate);
         let target_network: NeuralNet = main_network.clone();
-        let agent = Agent::new(EPSILON, GRID_DIM * GRID_DIM);
+        let agent = Agent::new(EPSILON, GRID_DIM.pow(2));
 
         DQN { num_layers, main_network, target_network, discount_factor, agent }
     }

@@ -1,6 +1,10 @@
-// Hyper-parameters
+// Constants for the DQN
 pub const LEARNING_RATE: f32 = 0.2;
-pub const EPOCHS: usize = 1000000;
+pub const DISCOUNT_FACTOR: f32 = 0.2;
+pub const BATCH_SIZE: f32 = 0.25;
+pub const EPOCHS: usize = 10;
+pub const TOTAL_EPISODES: usize = 2;
+pub const EPISODES_PER_UPDATE: usize = 100000;
 
 // Constants for the grid
 pub const GRID_DIM: usize = 20;

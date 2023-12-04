@@ -15,7 +15,20 @@ mod utility;
 use crate::grid::Grid;
 use crate::dqn::DQN;
 use crate::agent::Agent;
-use crate::constants::{WINDOW_WIDTH_MAX, WINDOW_HEIGHT_MAX, EPSILON, MAX_POPULATION_REPEATS, MAX_POPULATION_AGE, GRID_DIM};
+use crate::constants::{
+    WINDOW_WIDTH_MAX, 
+    WINDOW_HEIGHT_MAX, 
+    EPSILON, 
+    MAX_POPULATION_REPEATS, 
+    MAX_POPULATION_AGE, 
+    GRID_DIM, 
+    EPOCHS, 
+    LEARNING_RATE, 
+    DISCOUNT_FACTOR, 
+    TOTAL_EPISODES, 
+    EPISODES_PER_UPDATE, 
+    BATCH_SIZE,
+};
 
 use nannou::prelude::*;
 use bitvec::prelude::*;
@@ -35,14 +48,15 @@ struct Model {
 }
 
 fn model(app: &App) -> Model {
-    let num_actions = GRID_DIM * GRID_DIM;
+    let num_actions = GRID_DIM.pow(2);
     let layer_layout = vec![num_actions, num_actions + 100, num_actions - 100, num_actions];
-    let learning_rate = 0.2;
-    let discount_factor = 0.3;
-    let total_episodes = 1;
-    let episodes_per_update = 10000;
-    let batch_size = 0.2;
-    let epochs = 100;
+
+    let learning_rate = LEARNING_RATE;
+    let discount_factor = DISCOUNT_FACTOR;
+    let total_episodes = TOTAL_EPISODES;
+    let episodes_per_update = EPISODES_PER_UPDATE;
+    let batch_size = BATCH_SIZE;
+    let epochs = EPOCHS;
 
     let mut dqn = DQN::new(layer_layout.len(), layer_layout, learning_rate, discount_factor);
     dqn.run_training(total_episodes, episodes_per_update, epochs, batch_size).unwrap();
@@ -133,7 +147,7 @@ fn update(app: &App, model: &mut Model, _update: Update) {
 }
 
 fn create_grid_state(dqn: &mut DQN) -> BitVec {
-    let num_actions = GRID_DIM * GRID_DIM;
+    let num_actions = GRID_DIM.pow(2);
     // Start with random grid state
     let mut temp_agent = Agent::new(EPSILON, num_actions);
     let initial_grid_state = temp_agent.get_new_state();
@@ -199,16 +213,5 @@ fn view(app: &App, model: &Model, frame: Frame) {
 
 
 fn main() {
-    // let num_actions = GRID_DIM * GRID_DIM;
-    // let layer_layout = vec![num_actions, num_actions + 100, num_actions + 100, num_actions];
-    // let learning_rate = 0.2;
-    // let discount_factor = 0.3;
-    // let total_episodes = 100;
-    // let episodes_per_update = 10;
-    // let batch_size = 0.2;
-    // let epochs = 1000;
-
-    // let mut d = DQN::new(layer_layout.len(), layer_layout, learning_rate, discount_factor);
-    // d.run_training(total_episodes, episodes_per_update, epochs, batch_size).unwrap();
     nannou::app(model).update(update).run();
 }

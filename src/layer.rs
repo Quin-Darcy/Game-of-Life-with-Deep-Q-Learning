@@ -227,13 +227,13 @@ mod layer_tests {
         let next_layer_error_terms = vec![0.05; 2];
     
         // Normal case
-        match layer.calculate_neuron_errors(&target, &next_layer_weights, &next_layer_error_terms) {
+        match layer.calculate_neuron_errors(&target, &next_layer_weights, &next_layer_error_terms, 2) {
             Ok(errors) => assert_eq!(errors.len(), 2),
             Err(_) => panic!("calculate_neuron_errors failed on valid input"),
         }
     
         // Error case for empty input
-        assert!(matches!(layer.calculate_neuron_errors(&[], &next_layer_weights, &next_layer_error_terms), Err(NeuralNetError::EmptyVector{..})));
+        assert!(matches!(layer.calculate_neuron_errors(&[], &next_layer_weights, &next_layer_error_terms, 2), Err(NeuralNetError::EmptyVector{..})));
     }
 
     // TODO: Add more unit tests
