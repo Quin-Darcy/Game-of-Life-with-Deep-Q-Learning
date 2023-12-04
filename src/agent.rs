@@ -145,30 +145,6 @@ impl Agent {
         
         state_probability
     }
-
-    pub fn get_best_state(&mut self) -> BitVec {
-        if self.state_space.is_empty() {
-            // Generate a new state and add it to the state space
-            let new_state = self.get_new_state();
-            self.state_space.insert(new_state.clone(), INITIAL_PROBABILITY);
-            return new_state;
-        }
-
-        let mut best_state = None;
-        let mut highest_probability = f32::MIN;
-
-        for (state, probability) in &self.state_space {
-            if *probability > highest_probability {
-                highest_probability = *probability;
-                best_state = Some(state.clone());
-            }
-        }
-
-        self.max_value = highest_probability;
-        self.max_state = best_state.clone().unwrap();
-
-        best_state.expect("Expected a best state but found none")
-    }
     
     pub fn get_new_state(&mut self) -> BitVec {
         let mut rng = rand::thread_rng();
